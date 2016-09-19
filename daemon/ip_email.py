@@ -3,19 +3,19 @@
 
 import utility as util
 import netifaces as ni
-import datetime
-import time
-import os
+import time, datetime, sys
+from pathlib import Path
 
 retry_times_max = 6
 
 if "__main__" == __name__:
-    conf = util.config('%s/info.conf' % os.path.abspath('..')).get_dict()
+    conf = util.config('%s/info.conf' % Path(sys.path[0]).parent).get_dict()
     from_addr = conf['email']['email_addr']
     password = conf['email']['email_pd']
     smtp_server = conf['email']['smtp_server']
     smtp_port = conf['email']['smtp_port']
     to_addr = 'stkky@sina.com'
+    path = sys.path.append(1)
 
     retry_times = 0
     while retry_times < retry_times_max:
