@@ -2,7 +2,8 @@
 # -*- coding: UTF-8 -*-
 
 import logging
-logging.basicConfig(filename='logger.log', level=logging.INFO)
+import os
+logging.basicConfig(filename='%s/utility.log' % os.path.abspath('.'), level=logging.INFO)
 
 # 读取配置文件
 class config(object):
