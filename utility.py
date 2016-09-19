@@ -3,7 +3,7 @@
 
 import logging
 import os
-logging.basicConfig(filename='%s/log' % os.path.abspath('.'), level=logging.INFO)
+logging.basicConfig(filename='%s/.log' % os.path.abspath('.'), level=logging.INFO)
 
 # 读取配置文件
 class config(object):
@@ -12,9 +12,13 @@ class config(object):
 
     def read(self):
         import ConfigParser
+        import os
         parser = ConfigParser.ConfigParser()
-        parser.read(self.path)
-        return parser
+        if os.path.isfile(self.path):
+            parser.read(self.path)
+            return parser
+        else:
+            logging.error('can\'t find info.conf: %s' % self.path)
 
     def get_dict(self):
         parser = self.read()
