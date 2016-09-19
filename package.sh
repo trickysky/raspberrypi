@@ -1,1 +1,2 @@
-sudo pip install pathlib,netifaces
+sudo pip install pathlib
+sudo pip install netifaces
