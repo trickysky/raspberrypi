@@ -3,7 +3,7 @@
 
 import logging
 import os
-logging.basicConfig(filename='%s/utility.log' % os.path.abspath('.'), level=logging.INFO)
+logging.basicConfig(filename='%s/log' % os.path.abspath('.'), level=logging.INFO)
 
 # 读取配置文件
 class config(object):
