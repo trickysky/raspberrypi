@@ -3,7 +3,9 @@
 
 import logging
 import sys
+
 logging.basicConfig(filename='%s/.log' % sys.path[0], level=logging.INFO)
+
 
 # 读取配置文件
 class config(object):
@@ -47,6 +49,31 @@ def get_public_ip():
         return 0
 
 
+class network(object):
+    def __init__(self, name):
+        self.name = name
+
+    def is_connect(self):
+        import netifaces as ni
+        return True if 2 in ni.ifaddresses(self.name) else False
+
+    def get_ip(self):
+        import netifaces as ni
+        return ni.ifaddresses(self.name)[2][0]['addr'] if self.is_connect() else 'no %s' % self.name
+
+    def get_ssid(self):
+        if not self.is_connect():
+            return 'no %s' % self.name
+        else:
+            from subprocess import check_output
+            scanoutput = check_output(["iwconfig"])
+            ssid = "ssid not found"
+            for line in scanoutput.split():
+                line = line.decode("utf-8")
+                if "ESSID" in line:
+                    ssid = line.split('"')[1]
+            return ssid
+
 # 发送email
 def sent_email(content, from_addr, from_name, password, smtp_server, smtp_port, to_addr, to_name, theme):
     from email.header import Header
@@ -71,4 +98,3 @@ def sent_email(content, from_addr, from_name, password, smtp_server, smtp_port, 
         server.quit()
     except Exception, e:
         logging.error('sent email error: %s' % e)
-

@@ -2,11 +2,10 @@
 # -*- coding: UTF-8 -*-
 # trickysky
 
-import sys
-import time
+import time, datetime
 import Adafruit_Nokia_LCD as LCD
 from PIL import Image, ImageDraw, ImageFont
-from pathlib import Path
+import utility
 
 # Raspberry Pi software SPI config:
 SCLK = 17
@@ -36,15 +35,35 @@ draw = ImageDraw.Draw(image)
 draw.rectangle((0,0,LCD.LCDWIDTH,LCD.LCDHEIGHT), outline=255, fill=255)
 
 # Load default font.
-print '%s/src/fonts/Consolas.ttf' % Path(sys.path[0]).parent.parent
-font = ImageFont.truetype('%s/src/fonts/Consolas.ttf' % Path(sys.path[0]).parent.parent, 30)
+font_default = ImageFont.load_default()
+font_time = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSansOblique.ttf', 12)
+font_ip = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 10)
+font_noip = font_default
 
-# Write some text.
-draw.text((0,0), 'tiankun1  ')
-draw.text((0,14), '192.168.199.104')
+while True:
+    # Draw a white filled box to clear the image.
+    draw.rectangle((0,0,LCD.LCDWIDTH,LCD.LCDHEIGHT), outline=255, fill=255)
 
-# Display image.
-disp.image(image)
-disp.display()
+    # Write some text.
+    draw.text((16, 1), str(time.strftime('%H:%M:%S')), font=font_time)
+    draw.line((0, 15, LCD.LCDWIDTH, 15))
 
-quit()
+
+    if datetime.datetime.now().second % 10 in range(10):
+        lan_loc = (0, 20)
+        wifi_loc = (0, 32)
+        if utility.network('eth0').is_connect():
+            draw.text(lan_loc, utility.network('eth0').get_ip(), font=font_ip)
+        else:
+            draw.text(lan_loc, '-- no lan --', font=font_noip)
+        if utility.network('wlan0').is_connect():
+            draw.text(wifi_loc, utility.network('wlan0').get_ip(), font=font_ip)
+        else:
+            draw.text(wifi_loc, '-- no wifi --', font=font_noip)
+
+
+    # Display image.
+    disp.image(image)
+    disp.display()
+
+    time.sleep(0.25)
