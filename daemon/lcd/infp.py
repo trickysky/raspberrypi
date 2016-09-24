@@ -39,10 +39,7 @@ font_default = ImageFont.load_default()
 font_time = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSansOblique.ttf', 12)
 font_ip = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 10)
 font_noip = font_default
-font_content = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 10)
-
-
-
+font_content = ImageFont.truetype('/usr/share/fonts/truetype/roboto/Roboto-Thin.ttf', 10)
 
 while True:
     # Draw a white filled box to clear the image.
@@ -70,8 +67,8 @@ while True:
         else:
             draw.text(content2_loc, '-- no wifi --', font=font_noip)
     elif second % 20 in range(8, 14, 1):
-        draw.text(content1_loc, "CPU: %s%%" % util.get_cpu_percent(), font=font_content)
-        draw.text(content2_loc, "RAM: %s" % util.get_ram_info()[2], font=font_content)
+        draw.text(content1_loc, "CPU : %s%%" % util.get_cpu_percent(), font=font_content)
+        draw.text(content2_loc, "RAM : %s" % util.get_ram_info()[2], font=font_content)
     else:
         draw.text(content1_loc, "DISK Free: %s" % util.get_disk_space()[2], font=font_content)
         draw.text(content2_loc, "CPU Temp: %s'C" % util.get_cpu_temperature(), font=font_content)
