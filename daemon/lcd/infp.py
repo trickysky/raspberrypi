@@ -5,7 +5,7 @@
 import time, datetime
 import Adafruit_Nokia_LCD as LCD
 from PIL import Image, ImageDraw, ImageFont
-import utility
+import utility as util
 
 # Raspberry Pi software SPI config:
 SCLK = 17
@@ -39,6 +39,10 @@ font_default = ImageFont.load_default()
 font_time = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSansOblique.ttf', 12)
 font_ip = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 10)
 font_noip = font_default
+font_content = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeSans.ttf', 10)
+
+
+
 
 while True:
     # Draw a white filled box to clear the image.
@@ -48,19 +52,29 @@ while True:
     draw.text((16, 1), str(time.strftime('%H:%M:%S')), font=font_time)
     draw.line((0, 15, LCD.LCDWIDTH, 15))
 
+    content1_loc = (0, 20)
+    content2_loc = (0, 32)
+    second = datetime.datetime.now().second
 
-    if datetime.datetime.now().second % 10 in range(10):
-        lan_loc = (0, 20)
-        wifi_loc = (0, 32)
-        if utility.network('eth0').is_connect():
-            draw.text(lan_loc, utility.network('eth0').get_ip(), font=font_ip)
+    if second % 20 in range(0, 8, 1):
+        if util.network('eth0').is_connect():
+            draw.text(content1_loc, util.network('eth0').get_ip(), font=font_ip)
         else:
-            draw.text(lan_loc, '-- no lan --', font=font_noip)
-        if utility.network('wlan0').is_connect():
-            draw.text(wifi_loc, utility.network('wlan0').get_ip(), font=font_ip)
+            draw.text(content1_loc, '-- no lan --', font=font_noip)
+        if util.network('wlan0').is_connect():
+            if second % 20 in range(0, 4, 1):
+                draw.text(content2_loc, util.network('wlan0').get_ip(), font=font_ip)
+            else:
+                ssid = util.network('wlan0').get_ssid()
+                draw.text(content2_loc, ssid, font=font_default)
         else:
-            draw.text(wifi_loc, '-- no wifi --', font=font_noip)
-
+            draw.text(content2_loc, '-- no wifi --', font=font_noip)
+    elif second % 20 in range(8, 14, 1):
+        draw.text(content1_loc, "CPU: %s%%" % util.get_cpu_percent(), font=font_content)
+        draw.text(content2_loc, "RAM: %s" % util.get_ram_info()[2], font=font_content)
+    else:
+        draw.text(content1_loc, "DISK Free: %s" % util.get_disk_space()[2], font=font_content)
+        draw.text(content2_loc, "CPU Temp: %s'C" % util.get_cpu_temperature(), font=font_content)
 
     # Display image.
     disp.image(image)

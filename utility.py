@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 import logging
-import sys
+import sys, os
 
 logging.basicConfig(filename='%s/.log' % sys.path[0], level=logging.INFO)
 
@@ -66,13 +66,14 @@ class network(object):
             return 'no %s' % self.name
         else:
             from subprocess import check_output
-            scanoutput = check_output(["iwconfig"])
+            scanoutput = check_output(["iwconfig", self.name])
             ssid = "ssid not found"
             for line in scanoutput.split():
                 line = line.decode("utf-8")
                 if "ESSID" in line:
                     ssid = line.split('"')[1]
             return ssid
+
 
 # 发送email
 def sent_email(content, from_addr, from_name, password, smtp_server, smtp_port, to_addr, to_name, theme):
@@ -98,3 +99,44 @@ def sent_email(content, from_addr, from_name, password, smtp_server, smtp_port, 
         server.quit()
     except Exception, e:
         logging.error('sent email error: %s' % e)
+
+
+# Return CPU temperature as a character string
+def get_cpu_temperature():
+    res = os.popen('vcgencmd measure_temp').readline()
+    return (res.replace("temp=", "").replace("'C\n", ""))
+
+
+# Return RAM information (unit=kb) in a list
+# Index 0: total RAM
+# Index 1: used RAM
+# Index 2: free RAM
+def get_ram_info():
+    p = os.popen('free -h')
+    i = 0
+    while 1:
+        i = i + 1
+        line = p.readline()
+        if i == 2:
+            return (line.split()[1:4])
+
+
+# Return % of CPU used by user as a character string
+def get_cpu_percent():
+    import psutil
+    return psutil.cpu_percent()
+
+
+# Return information about disk space as a list (unit included)
+# Index 0: total disk space
+# Index 1: used disk space
+# Index 2: remaining disk space
+# Index 3: percentage of disk used
+def get_disk_space():
+    p = os.popen("df -h /")
+    i = 0
+    while 1:
+        i = i + 1
+        line = p.readline()
+        if i == 2:
+            return (line.split()[1:5])
