@@ -71,7 +71,7 @@ while True:
         draw.text(content2_loc, "RAM : %s" % util.get_ram_info()[2], font=font_content)
     else:
         draw.text(content1_loc, "DISK Free: %s" % util.get_disk_space()[2], font=font_content)
-        draw.text(content2_loc, "CPU Temp: %s 'C" % util.get_cpu_temperature(), font=font_content)
+        draw.text(content2_loc, "CPU Temp: %s'C" % util.get_cpu_temperature(), font=font_content)
 
     # Display image.
     disp.image(image)
