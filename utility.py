@@ -140,3 +140,58 @@ def get_disk_space():
         line = p.readline()
         if i == 2:
             return (line.split()[1:5])
+
+
+class AliyunMonitor:
+    def __init__(self, url):
+        conf = config('./info.conf').get_dict()
+        self.access_id = conf['ali']['ALIYUN_ACCESS_KEY_ID']
+        self.access_secret = conf['ali']['ALIYUN_ACCESS_KEY_SECRET']
+        self.url = url
+
+    # 签名
+    def sign(self, accessKeySecret, parameters):
+        import hmac
+        import base64
+        from hashlib import sha1
+        sortedParameters = sorted(parameters.items(), key=lambda parameters: parameters[0])
+        canonicalizedQueryString = ''
+        for (k, v) in sortedParameters:
+            canonicalizedQueryString += '&' + self.percent_encode(k) + '=' + self.percent_encode(v)
+        stringToSign = 'GET&%2F&' + self.percent_encode(canonicalizedQueryString[1:])    # 使用get请求方法
+        h = hmac.new(accessKeySecret + "&", stringToSign, sha1)
+        signature = base64.encodestring(h.digest()).strip()
+        return signature
+
+    def percent_encode(self, encodeStr):
+        import urllib
+        encodeStr = str(encodeStr)
+        res = urllib.quote(encodeStr.decode('utf-8').encode('utf-8'), '')
+        res = res.replace('+', '%20')
+        res = res.replace('*', '%2A')
+        res = res.replace('%7E', '~')
+        return res
+
+    def make_url(self, params):
+        import time
+        import uuid
+        import urllib
+        timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        parameters = {
+            'Format': 'JSON',
+            'Version': '2015-01-09',
+            'AccessKeyId': self.access_id,
+            'SignatureVersion': '1.0',
+            'SignatureMethod': 'HMAC-SHA1',
+            'SignatureNonce': str(uuid.uuid1()),
+            'Timestamp': timestamp,
+        }
+        for key in params.keys():
+            parameters[key] = params[key]
+
+        signature = self.sign(self.access_secret, parameters)
+        parameters['Signature'] = signature
+
+        # return parameters
+        url = self.url + "/?" + urllib.urlencode(parameters)
+        return url
