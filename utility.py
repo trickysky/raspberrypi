@@ -5,7 +5,7 @@ import logging
 import os
 import sys
 
-logging.basicConfig(filename='%s/.log' % sys.path[0], level=logging.INFO)
+logging.basicConfig(filename='%s/log' % os.path.dirname(os.path.abspath(__file__)), level=logging.INFO)
 
 
 # 读取配置文件
