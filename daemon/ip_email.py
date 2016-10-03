@@ -4,12 +4,11 @@
 import utility as util
 import netifaces as ni
 import time, datetime, sys
-from pathlib import Path
 
 retry_times_max = 6
 
 if "__main__" == __name__:
-    conf = util.config('%s/info.conf' % Path(sys.path[0]).parent).get_dict()
+    conf = util.config().get_dict()
     from_addr = conf['email']['email_addr']
     password = conf['email']['email_pd']
     smtp_server = conf['email']['smtp_server']

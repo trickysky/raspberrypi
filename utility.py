@@ -2,15 +2,17 @@
 # -*- coding: UTF-8 -*-
 
 import logging
-import sys, os
+import os
+import sys
 
 logging.basicConfig(filename='%s/.log' % sys.path[0], level=logging.INFO)
 
 
 # 读取配置文件
 class config(object):
-    def __init__(self, path):
-        self.path = path
+    def __init__(self):
+        from pathlib import Path
+        self.path = '%s/info.conf' % os.path.dirname(os.path.abspath(__file__))
 
     def read(self):
         import ConfigParser
@@ -144,9 +146,9 @@ def get_disk_space():
 
 class AliyunMonitor:
     def __init__(self, url):
-        conf = config('./info.conf').get_dict()
-        self.access_id = conf['ali']['ALIYUN_ACCESS_KEY_ID']
-        self.access_secret = conf['ali']['ALIYUN_ACCESS_KEY_SECRET']
+        conf = config().get_dict()
+        self.access_id = conf['ali']['access_key_id']
+        self.access_secret = conf['ali']['access_key_secret']
         self.url = url
 
     # 签名
