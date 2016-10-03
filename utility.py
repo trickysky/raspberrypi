@@ -11,8 +11,7 @@ logging.basicConfig(filename='%s/.log' % sys.path[0], level=logging.INFO)
 # 读取配置文件
 class config(object):
     def __init__(self):
-        from pathlib import Path
-        self.path = '%s/info.conf' % os.path.dirname(os.path.abspath(__file__))
+        self.path = '%s/config.ini' % os.path.dirname(os.path.abspath(__file__))
 
     def read(self):
         import ConfigParser
@@ -22,7 +21,7 @@ class config(object):
             parser.read(self.path)
             return parser
         else:
-            logging.error('can\'t find info.conf: %s' % self.path)
+            logging.error('can\'t find config.ini: %s' % self.path)
 
     def get_dict(self):
         parser = self.read()

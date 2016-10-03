@@ -88,6 +88,6 @@ ENV/
 # Rope project settings
 .ropeproject
 
-*.conf
+config.ini
 .idea
 log/
