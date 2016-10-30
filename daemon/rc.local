@@ -1,0 +1,9 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+sudo /usr/bin/vncserver :2
+sudo /usr/bin/python /home/tiankun/raspberrypi/daemon/lcd/lcd_info.py &
+sudo /usr/local/bin/sslocal -c /home/tiankun/ss/sslocal.json -d start
+
+exit 0
