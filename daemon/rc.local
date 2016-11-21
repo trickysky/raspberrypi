@@ -6,4 +6,8 @@ sudo /usr/bin/vncserver :2
 sudo /usr/bin/python /home/tiankun/raspberrypi/daemon/lcd/lcd_info.py &
 sudo /usr/local/bin/sslocal -c /home/tiankun/ss/sslocal.json -d start
 
+sudo /bin/mount -t cifs -o username=admin,password={{mypassword}} //nas-p.tiankun.me/tiankun /share/tiankun/
+sudo /bin/mount -t cifs -o username=admin,password={{mypassword}} //nas-p.tiankun.me/video /share/video/
+sudo /bin/systemctl restart transmission-daemon.service
+
 exit 0
