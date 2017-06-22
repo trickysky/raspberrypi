@@ -4,10 +4,9 @@
 # 2017/6/19
 
 from flask import Flask, request
-import sys
-sys.path.append("..")
 from EmailService import Email
 app = Flask(__name__)
+
 
 @app.route("/s/ip_report", methods=['POST'])
 def hello():
@@ -20,6 +19,7 @@ def hello():
         return '%s IP report complete: %s; %s' % (name, ipv4, ipv6)
     else:
         return '%s IP report error'
+
 
 if __name__ == '__main__':
     app.run(host='::')
